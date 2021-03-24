@@ -1,9 +1,10 @@
-src
-test
 .babelrc
 .eslintrc.json
 .idea
 .raiseverrc
+coverage
 package-lock.json
+src
+test
 yarn.lock
 *.log
