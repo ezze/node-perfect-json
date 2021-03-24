@@ -1,9 +1,11 @@
 .babelrc
+.circleci
 .eslintrc.json
 .idea
 .raiseverrc
 coverage
 package-lock.json
+reports
 src
 test
 yarn.lock
