@@ -15,7 +15,8 @@
     "test:coverage": "jest --coverage",
     "test:ci": "cross-env JEST_JUNIT_OUTPUT_DIR=reports/junit jest --coverage --ci --reporters=default --reporters=jest-junit",
     "lint": "eslint src",
-    "lint:test": "eslint test"
+    "lint:test": "eslint test",
+    "raise": "raise-version"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.10",
