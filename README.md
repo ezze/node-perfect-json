@@ -38,7 +38,7 @@ perfectJson(obj, options)
         - `indent` — count of indentation spaces per level (`(depth + 1) * indent` results in a summary indentation on a given level).
     - `maxLineLength` — places objects and arrays on a single line if resulting line's length is less than or equal to specified value;
     - `arrayMargin` — characters after opening and before closing array brackets when array is placed on a single line (defaults to empty string  meaning no gap: `["Javascript", "Node.js", "ES6"]`);
-    - `objectMargin` — characters after opening and before closing object brackets when object is placed on a single line (defaults to ` ` meaning a gap: `{ "node": "14.0.0", "eslint": true, "babel": true, "typescript": false }`).
+    - `objectMargin` — characters after opening and before closing object brackets when object is placed on a single line (defaults to `' '` meaning a gap: `{ "node": "14.0.0", "eslint": true, "babel": true, "typescript": false }`).
 
 ### Basic example
 
@@ -120,7 +120,7 @@ Result:
 }
 ```
 
-### Place props specific on single line
+### Place specific props on a single line
 
 Use `singleLine` option:
 
