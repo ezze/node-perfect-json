@@ -1,5 +1,11 @@
 # node-perfect-json
 
+[![NPM version](https://img.shields.io/npm/v/perfect-json.svg)](https://www.npmjs.com/package/perfect-json)
+[![CircleCI](https://circleci.com/gh/ezze/node-perfect-json.svg?style=shield)](https://circleci.com/gh/ezze/node-perfect-json)
+[![codecov](https://codecov.io/gh/ezze/node-perfect-json/branch/develop/graph/badge.svg?token=I0ZRW8OP7L)](https://codecov.io/gh/ezze/node-perfect-json)
+[![Downloads/month](https://img.shields.io/npm/dm/perfect-json.svg)](https://www.npmjs.com/package/perfect-json)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE.md)
+
 Utility function to beautify JSON string...like JSON.stringify() but better
 
 ## Installation
