@@ -88,7 +88,11 @@ const perfectJson = require('perfect-json');
 console.log(perfectJson({
   name: 'Dmitriy',
   surname: 'Pushkov',
-  skills: ["JavaScript", "Node.js", "ES6"],
+  skills: [
+    "JavaScript",
+    "Node.js",
+    "ES6"
+  ],
   env: {
     node: "14.0.0",
     eslint: true,
@@ -180,7 +184,7 @@ const obj = {
   }
 };
 console.log(perfectJson(obj, {
-  maxLineLength: 30
+  maxLineLength: 40
 }));
 console.log(perfectJson(obj, {
   maxLineLength: 80
@@ -193,11 +197,7 @@ Result:
 {
   "name": "Dmitriy",
   "surname": "Pushkov",
-  "skills": [
-    "JavaScript",
-    "Node.js",
-    "ES6"
-  ],
+  "skills": ["JavaScript", "Node.js", "ES6"],
   "env": {
     "node": "14.0.0",
     "eslint": true,
@@ -205,6 +205,7 @@ Result:
     "typescript": false
   }
 }
+
 ```
 
 ```json
