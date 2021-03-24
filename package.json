@@ -1,0 +1,30 @@
+{
+  "name": "perfect-json",
+  "version": "0.1.0",
+  "description": "Utility function to beautify JSON string...like JSON.stringify() but better",
+  "main": "lib/perfect-json.js",
+  "repository": "git@github.com:ezze/node-perfect-json",
+  "author": "Dmitriy Pushkov <ezze@ezze.org>",
+  "license": "MIT",
+  "scripts": {
+    "prepublishOnly": "npm run lint && npm run test && npm run build",
+    "build": "npm run clean && babel src -d lib",
+    "watch": "npm run clean && babel src -d lib -w",
+    "clean": "rimraf lib",
+    "test": "jest",
+    "lint": "eslint src",
+    "lint:test": "eslint test"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.10",
+    "@babel/eslint-parser": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
+    "babel-plugin-add-module-exports": "^1.0.4",
+    "eslint": "^7.22.0",
+    "eslint-config-ezze": "^0.10.1",
+    "jest": "^26.6.3",
+    "raise-version": "^0.5.0",
+    "rimraf": "^3.0.2"
+  }
+}
