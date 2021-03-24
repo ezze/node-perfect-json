@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="12" failures="0" errors="0" time="0.861">
+  <testsuite name="perfect json" errors="0" failures="0" skipped="0" timestamp="2021-03-24T21:41:10" time="0.428" tests="12">
+    <testcase classname="perfect json empty object" name="perfect json empty object" time="0.002">
+    </testcase>
+    <testcase classname="perfect json empty array" name="perfect json empty array" time="0">
+    </testcase>
+    <testcase classname="perfect json simple object at multiple lines" name="perfect json simple object at multiple lines" time="0.001">
+    </testcase>
+    <testcase classname="perfect json simple object at single line" name="perfect json simple object at single line" time="0">
+    </testcase>
+    <testcase classname="perfect json simple array at multiple lines" name="perfect json simple array at multiple lines" time="0">
+    </testcase>
+    <testcase classname="perfect json simple at single line" name="perfect json simple at single line" time="0.001">
+    </testcase>
+    <testcase classname="perfect json complex multiple lines" name="perfect json complex multiple lines" time="0">
+    </testcase>
+    <testcase classname="perfect json complex nested array on single line" name="perfect json complex nested array on single line" time="0">
+    </testcase>
+    <testcase classname="perfect json complex nested object on single line" name="perfect json complex nested object on single line" time="0.001">
+    </testcase>
+    <testcase classname="perfect json complex restrict single line by max length" name="perfect json complex restrict single line by max length" time="0">
+    </testcase>
+    <testcase classname="perfect json advanced array of objects" name="perfect json advanced array of objects" time="0">
+    </testcase>
+    <testcase classname="perfect json advanced nested array of objects" name="perfect json advanced nested array of objects" time="0.001">
+    </testcase>
+  </testsuite>
+</testsuites>
