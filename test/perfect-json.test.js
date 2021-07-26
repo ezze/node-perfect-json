@@ -390,6 +390,19 @@ describe('perfect json', () => {
       ]);
       checkSplitResult(splitResult, ['#quality', '#rules']);
     });
+
+    it('duplicate placeholder', () => {
+      expect(() => {
+        perfectJson({
+          languages: ['JavaScript', 'TypeScript'],
+          nested: {
+            languages: ['JavaScript', 'TypeScript']
+          }
+        }, {
+          split: ({ key }) => key === 'languages' ? '#languages' : null
+        });
+      }).toThrowError('Placeholder "#languages" is already used');
+    });
   });
 });
 
