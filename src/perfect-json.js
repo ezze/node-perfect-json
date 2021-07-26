@@ -54,7 +54,10 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
 
   const line = `${open}${margin}${values.join(', ')}${margin}${close}`;
   const itemOpts = { key, value: item, path, items, line, depth, indent };
-  const splitPlaceholder = typeof split === 'function' ? split(itemOpts) : null;
+  const splitPlaceholder = typeof key === 'string' && typeof split === 'function' ? split(itemOpts) : null;
+  if (splitted[splitPlaceholder] !== undefined) {
+    throw new Error(`Placeholder "${splitPlaceholder}" is already used`);
+  }
 
   let result;
   if (
@@ -67,7 +70,8 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
   else {
     let list;
     if (Array.isArray(item) && arrayValuesAreExpandedObjects(values) && compact) {
-      const replaceRegExp = new RegExp(`\\n {${indent}}`, 'g');
+      const replaceIndent = splitPlaceholder ? (depth + 1) * indent : indent;
+      const replaceRegExp = new RegExp(`\\n {${replaceIndent}}`, 'g');
       list = '';
       for (let i = 0; i < values.length; i++) {
         if (list) {
