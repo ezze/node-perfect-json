@@ -322,6 +322,74 @@ describe('perfect json', () => {
       ]);
       checkSplitResult(splitResult, ['#languages']);
     });
+
+    it('nested', () => {
+      const object = {
+        products: {
+          overwrite: true,
+          quality: {
+            rejectOnError: false,
+            nested: {
+              strict: false,
+              rules: [{
+                conditions: { satellite: 'RESURS' },
+                status: 'good',
+                enabled: false
+              }, {
+                conditions: { sensor: 'GEOTON' },
+                status: 'bad',
+                enabled: true
+              }]
+            }
+          }
+        }
+      };
+      const split = ({ path, depth }) => {
+        if (depth === 2 && path[1] === 'quality') {
+          return '#quality';
+        }
+        if (depth === 4 && path[3] === 'rules') {
+          return '#rules';
+        }
+        return null;
+      };
+      const splitResult = jest.fn().mockImplementation(splitted => {
+        const { '#quality': qualityJson, '#rules': rulesJson } = splitted;
+        checkJson(qualityJson, [
+          '{',
+          '  "rejectOnError": false,',
+          '  "nested": {',
+          '    "strict": false,',
+          '    "rules": "#rules"',
+          '  }',
+          '}'
+        ]);
+        checkJson(rulesJson, [
+          '[{',
+          '  "conditions": {',
+          '    "satellite": "RESURS"',
+          '  },',
+          '  "status": "good",',
+          '  "enabled": false',
+          '}, {',
+          '  "conditions": {',
+          '    "sensor": "GEOTON"',
+          '  },',
+          '  "status": "bad",',
+          '  "enabled": true',
+          '}]'
+        ]);
+      });
+      checkJson(perfectJson(object, { split, splitResult }), [
+        '{',
+        '  "products": {',
+        '    "overwrite": true,',
+        '    "quality": "#quality"',
+        '  }',
+        '}'
+      ]);
+      checkSplitResult(splitResult, ['#quality', '#rules']);
+    });
   });
 });
 
@@ -329,7 +397,18 @@ function checkJson(actual, expected) {
   expect(actual).toEqual(expected.join('\n'));
 }
 
-function checkSplitResult(splitResult, placeholders) {
+function checkSplitResult(splitResult, expectedPlaceholders) {
   expect(splitResult).toHaveBeenCalledTimes(1);
-  expect(Object.keys(splitResult.mock.calls[0][0])).toEqual(placeholders);
+  const placeholders = Object.keys(splitResult.mock.calls[0][0]);
+  expect(difference(expectedPlaceholders, placeholders)).toHaveLength(0);
+}
+
+function difference(array1, array2) {
+  const diff = [];
+  array1.forEach(item => {
+    if (!array2.includes(item)) {
+      diff.push(item);
+    }
+  });
+  return diff;
 }

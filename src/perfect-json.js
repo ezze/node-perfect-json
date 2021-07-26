@@ -5,6 +5,7 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
   } = options;
 
   const { key, path = [], items = [], depth = 0, splitted = {} } = recursiveOptions;
+  let { splitDepth = 0 } = recursiveOptions;
 
   if (item === undefined) {
     return 'undefined';
@@ -19,16 +20,25 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
     return `${item}`;
   }
 
+  const itemOpts = { key, value: item, path, items, depth, indent };
+  const splitPlaceholder = typeof key === 'string' && typeof split === 'function' ? split(itemOpts) : null;
+  if (splitPlaceholder) {
+    if (splitted[splitPlaceholder] !== undefined) {
+      throw new Error(`Placeholder "${splitPlaceholder}" is already used`);
+    }
+    splitDepth = 0;
+  }
+
   const perfectify = (key, value) => perfectJson(value, options, {
     key,
     path: path.concat([key]),
     items: items.concat([item]),
     depth: depth + 1,
+    splitDepth: splitDepth + 1,
     splitted
   });
 
   const baseIndentChars = getIndentChars(depth, indent);
-  const nestedIndentChars = getIndentChars(depth + 1, indent);
   const prefixIndentChars = key === undefined ? baseIndentChars : '';
 
   let open, close, margin, values;
@@ -53,16 +63,11 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
   }
 
   const line = `${open}${margin}${values.join(', ')}${margin}${close}`;
-  const itemOpts = { key, value: item, path, items, line, depth, indent };
-  const splitPlaceholder = typeof key === 'string' && typeof split === 'function' ? split(itemOpts) : null;
-  if (splitted[splitPlaceholder] !== undefined) {
-    throw new Error(`Placeholder "${splitPlaceholder}" is already used`);
-  }
 
   let result;
   if (
     (typeof singleLine === 'boolean' && singleLine) ||
-    (typeof singleLine === 'function' && singleLine({ key, value: item, path, items, line, depth, indent })) ||
+    (typeof singleLine === 'function' && singleLine({ ...itemOpts, line })) ||
     (typeof maxLineLength === 'number' && line.length + baseIndentChars.length <= maxLineLength)
   ) {
     result = line;
@@ -70,7 +75,7 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
   else {
     let list;
     if (Array.isArray(item) && arrayValuesAreExpandedObjects(values) && compact) {
-      const replaceIndent = splitPlaceholder ? (depth + 1) * indent : indent;
+      const replaceIndent = splitPlaceholder ? (splitDepth + 1) * indent : indent;
       const replaceRegExp = new RegExp(`\\n {${replaceIndent}}`, 'g');
       list = '';
       for (let i = 0; i < values.length; i++) {
@@ -81,8 +86,8 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
       }
     }
     else {
-      const baseSpace = splitPlaceholder ? '' : baseIndentChars;
-      const nestedSpace = splitPlaceholder ? getIndentChars(1, indent) : nestedIndentChars;
+      const baseSpace = getIndentChars(splitDepth, indent);
+      const nestedSpace = getIndentChars(splitDepth + 1, indent);
       list = `\n${values.map(value => `${nestedSpace}${value}`).join(',\n')}\n${baseSpace}`;
     }
     result = `${prefixIndentChars}${open}${list}${close}`;
