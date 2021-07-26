@@ -15,11 +15,6 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
     return `${item}`;
   }
 
-  let open;
-  let close;
-  let margin;
-  let values;
-
   const baseIndentChars = new Array(depth * indent + 1).join(' ');
   const globalIndentChars = new Array((depth + 1) * indent + 1).join(' ');
   const prefixIndentChars = key === undefined ? baseIndentChars : '';
@@ -31,6 +26,7 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
     depth: depth + 1
   });
 
+  let open, close, margin, values;
   if (Array.isArray(item)) {
     if (item.length === 0) {
       return `${prefixIndentChars}[]`;
