@@ -1,6 +1,6 @@
 {
   "name": "perfect-json",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Utility function to beautify JSON string...like JSON.stringify() but better",
   "main": "lib/perfect-json.js",
   "repository": "git@github.com:ezze/node-perfect-json",
