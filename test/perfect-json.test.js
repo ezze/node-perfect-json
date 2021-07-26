@@ -34,6 +34,11 @@ describe('perfect json', () => {
       const result = '["PAN", "MS", "PMS"]';
       expect(perfectJson(array, { singleLine: true })).toEqual(result);
     });
+
+    it('undefined and null values', () => {
+      const result = '{\n  "undefined": undefined,\n  "null": null\n}';
+      expect(perfectJson({ undefined: undefined, null: null })).toEqual(result);
+    });
   });
 
   describe('complex', () => {
