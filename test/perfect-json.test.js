@@ -215,11 +215,11 @@ describe('perfect json', () => {
         skills: ['JavaScript', 'Node.js', 'ES6'],
         env: { node: '14.0.0', eslint: true, babel: true, typescript: false }
       };
-      const split = ({ path, depth }) => {
+      const split = ({ key, depth }) => {
         if (depth !== 1) {
           return null;
         }
-        switch (path[0]) {
+        switch (key) {
           case 'skills': return '#skills';
           case 'env': return '#env';
           default: return null;
@@ -263,8 +263,8 @@ describe('perfect json', () => {
           }
         }
       };
-      const split = ({ path, depth }) => {
-        return depth === 2 && path[1] === 'profile' ? '#profile' : null;
+      const split = ({ key, depth }) => {
+        return depth === 2 && key === 'profile' ? '#profile' : null;
       };
       const splitResult = jest.fn().mockImplementation(splitted => {
         const { '#profile': profileJson } = splitted;
@@ -295,8 +295,8 @@ describe('perfect json', () => {
           ]
         }
       };
-      const split = ({ path, depth }) => {
-        return depth === 2 && path[1] === 'languages' ? '#languages' : null;
+      const split = ({ key, depth }) => {
+        return depth === 2 && key === 'languages' ? '#languages' : null;
       };
       const splitResult = jest.fn().mockImplementation(splitted => {
         const { '#languages': languagesJson } = splitted;
@@ -344,11 +344,11 @@ describe('perfect json', () => {
           }
         }
       };
-      const split = ({ path, depth }) => {
-        if (depth === 2 && path[1] === 'quality') {
+      const split = ({ key, depth }) => {
+        if (depth === 2 && key === 'quality') {
           return '#quality';
         }
-        if (depth === 4 && path[3] === 'rules') {
+        if (depth === 4 && key === 'rules') {
           return '#rules';
         }
         return null;

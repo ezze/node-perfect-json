@@ -1,5 +1,7 @@
 # Changelog
 
+- `split` and `splitResult` options to split the resulting JSON string into chunks are added.
+
 ## 0.2.0 (2021-07-26)
 
 - `compact` option is added.
