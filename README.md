@@ -35,6 +35,7 @@ perfectJson(obj, options)
       - `value` — value of the current property;
       - `path` — array consisting of names of all ascendant properties including the current one;
       - `items` — array of references to all ascendant objects and arrays;
+      - `line` — stringified array or object `value` placed on a single line;
       - `depth` — zero-based depth level (equals to `path.length` and `items.length`);
       - `indent` — count of indentation spaces per level (`(depth + 1) * indent` results in a summary indentation on a given level).
    - `maxLineLength` — places objects and arrays on a single line if resulting line's length is less than or equal to specified value;

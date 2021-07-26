@@ -187,4 +187,46 @@ describe('perfect json', () => {
       expect(perfectJson(object, { compact: false, singleLine: ({ key }) => key === 'levels' })).toEqual(result);
     });
   });
+
+  describe('splitting', () => {
+    it('nested objects', () => {
+      const object = {
+        name: 'Dmitriy',
+        surname: 'Pushkov',
+        skills: ['JavaScript', 'Node.js', 'ES6'],
+        env: { node: '14.0.0', eslint: true, babel: true, typescript: false }
+      };
+      const result = '{\n' +
+        '  "name": "Dmitriy",\n' +
+        '  "surname": "Pushkov",\n' +
+        '  "skills": "#skills",\n' +
+        '  "env": "#env"\n' +
+        '}';
+      const skillsResult = '[\n' +
+        '  "JavaScript",\n' +
+        '  "Node.js",\n' +
+        '  "ES6"\n' +
+        ']';
+      const envResult = '{\n' +
+        '  "node": "14.0.0",\n' +
+        '  "eslint": true,\n' +
+        '  "babel": true,\n' +
+        '  "typescript": false\n' +
+        '}';
+      expect(perfectJson(object, {
+        split: ({ path }) => {
+          switch (path[0]) {
+            case 'skills': return '#skills';
+            case 'env': return '#env';
+            default: return null;
+          }
+        },
+        splitResult: (splitted => {
+          const { '#skills': skillsJson, '#env': envJson } = splitted;
+          expect(skillsJson).toEqual(skillsResult);
+          expect(envJson).toEqual(envResult);
+        })
+      })).toEqual(result);
+    });
+  });
 });
