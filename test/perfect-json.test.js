@@ -105,12 +105,23 @@ describe('perfect json', () => {
   });
 
   describe('advanced', () => {
+    const array = [
+      { name: 'RESURS', orbit: 5000 },
+      { name: 'KANOPUS', orbit: 2250 },
+      { name: 'METEOR', orbit: 1750 }
+    ];
+
+    const object = {
+      processing: {
+        rules: [{
+          levels: ['L0', 'L2']
+        }, {
+          levels: ['RAW', 'L0', 'L2']
+        }]
+      }
+    };
+
     it('array of objects', () => {
-      const array = [
-        { name: 'RESURS', orbit: 5000 },
-        { name: 'KANOPUS', orbit: 2250 },
-        { name: 'METEOR', orbit: 1750 }
-      ];
       const result = '[{\n' +
         '  "name": "RESURS",\n' +
         '  "orbit": 5000\n' +
@@ -124,16 +135,25 @@ describe('perfect json', () => {
       expect(perfectJson(array)).toEqual(result);
     });
 
+    it('incompact array of objects', () => {
+      const result = '[\n' +
+        '  {\n' +
+        '    "name": "RESURS",\n' +
+        '    "orbit": 5000\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "name": "KANOPUS",\n' +
+        '    "orbit": 2250\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "name": "METEOR",\n' +
+        '    "orbit": 1750\n' +
+        '  }\n' +
+        ']';
+      expect(perfectJson(array, { compact: false })).toEqual(result);
+    });
+
     it('nested array of objects', () => {
-      const object = {
-        processing: {
-          rules: [{
-            levels: ['L0', 'L2']
-          }, {
-            levels: ['RAW', 'L0', 'L2']
-          }]
-        }
-      };
       const result = '{\n' +
         '  "processing": {\n' +
         '    "rules": [{\n' +
@@ -144,6 +164,22 @@ describe('perfect json', () => {
         '  }\n' +
         '}';
       expect(perfectJson(object, { singleLine: ({ key }) => key === 'levels' })).toEqual(result);
+    });
+
+    it('nested incompact array of objects', () => {
+      const result = '{\n' +
+        '  "processing": {\n' +
+        '    "rules": [\n' +
+        '      {\n' +
+        '        "levels": ["L0", "L2"]\n' +
+        '      },\n' +
+        '      {\n' +
+        '        "levels": ["RAW", "L0", "L2"]\n' +
+        '      }\n' +
+        '    ]\n' +
+        '  }\n' +
+        '}';
+      expect(perfectJson(object, { compact: false, singleLine: ({ key }) => key === 'levels' })).toEqual(result);
     });
   });
 });

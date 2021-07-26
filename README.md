@@ -28,17 +28,18 @@ perfectJson(obj, options)
 
 - `obj` — JSON to beautify;
 - `options` — optional parameters:
-    - `indent` — count of indentation spaces (defaults to `2`);
-    - `singleLine` — tells whether values of object properties must be placed on a single line, it can be of boolean type or a function returning a boolean result and being invoked for each property of an object recursively — the function receives an object argument with the following properties:
-        - `key` — name of the current property (zero-based index in case of array);
-        - `value` — value of the current property;
-        - `path` — array consisting of names of all ascendant properties including the current one;
-        - `items` — array of references to all ascendant objects and arrays;
-        - `depth` — zero-based depth level (equals to `path.length` and `items.length`);
-        - `indent` — count of indentation spaces per level (`(depth + 1) * indent` results in a summary indentation on a given level).
-    - `maxLineLength` — places objects and arrays on a single line if resulting line's length is less than or equal to specified value;
-    - `arrayMargin` — characters after opening and before closing array brackets when array is placed on a single line (defaults to empty string  meaning no gap: `["Javascript", "Node.js", "ES6"]`);
-    - `objectMargin` — characters after opening and before closing object brackets when object is placed on a single line (defaults to `' '` meaning a gap: `{ "node": "14.0.0", "eslint": true, "babel": true, "typescript": false }`).
+   - `indent` — count of indentation spaces (defaults to `2`);
+   - `compact` — tells whether close and open brackets of object array items must be placed on the same line (defaults to `true`); 
+   - `singleLine` — tells whether values of object properties must be placed on a single line, it can be of boolean type or a function returning a boolean result and being invoked for each property of an object recursively — the function receives an object argument with the following properties:
+      - `key` — name of the current property (zero-based index in case of array);
+      - `value` — value of the current property;
+      - `path` — array consisting of names of all ascendant properties including the current one;
+      - `items` — array of references to all ascendant objects and arrays;
+      - `depth` — zero-based depth level (equals to `path.length` and `items.length`);
+      - `indent` — count of indentation spaces per level (`(depth + 1) * indent` results in a summary indentation on a given level).
+   - `maxLineLength` — places objects and arrays on a single line if resulting line's length is less than or equal to specified value;
+   - `arrayMargin` — characters after opening and before closing array brackets when array is placed on a single line (defaults to empty string  meaning no gap: `["Javascript", "Node.js", "ES6"]`);
+   - `objectMargin` — characters after opening and before closing object brackets when object is placed on a single line (defaults to `' '` meaning a gap: `{ "node": "14.0.0", "eslint": true, "babel": true, "typescript": false }`).
 
 ### Basic example
 
@@ -79,6 +80,36 @@ Result:
 }
 ```
 
+### Incompact object array items
+
+Use `compact` option:
+
+```javascript
+const perfectJson = require('perfect-json');
+console.log(perfectJson([{
+  name: 'Dmitriy',
+  surname: 'Pushkov'
+}, {
+  name: 'Tamara',
+  surname: 'Pushkova'
+}], { compact: false }));
+```
+
+Result:
+
+```json
+[
+  {
+    "name": "Dmitriy",
+    "surname": "Pushkov"
+  },
+  {
+    "name": "Tamara",
+    "surname": "Pushkova"
+  }
+]
+```
+
 ### Set indentation size
 
 Use `indent` option:
@@ -88,7 +119,11 @@ const perfectJson = require('perfect-json');
 console.log(perfectJson({
   name: 'Dmitriy',
   surname: 'Pushkov',
-  skills: ["JavaScript", "Node.js", "ES6"],
+  skills: [
+    "JavaScript",
+    "Node.js",
+    "ES6"
+  ],
   env: {
     node: "14.0.0",
     eslint: true,
@@ -180,7 +215,7 @@ const obj = {
   }
 };
 console.log(perfectJson(obj, {
-  maxLineLength: 30
+  maxLineLength: 40
 }));
 console.log(perfectJson(obj, {
   maxLineLength: 80
@@ -193,11 +228,7 @@ Result:
 {
   "name": "Dmitriy",
   "surname": "Pushkov",
-  "skills": [
-    "JavaScript",
-    "Node.js",
-    "ES6"
-  ],
+  "skills": ["JavaScript", "Node.js", "ES6"],
   "env": {
     "node": "14.0.0",
     "eslint": true,
@@ -205,6 +236,7 @@ Result:
     "typescript": false
   }
 }
+
 ```
 
 ```json

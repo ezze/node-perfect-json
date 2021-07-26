@@ -1,18 +1,6 @@
 export default function perfectJson(item, options = {}, recursiveOptions = {}) {
-  const {
-    indent = 2,
-    singleLine,
-    maxLineLength,
-    arrayMargin = '',
-    objectMargin = ' '
-  } = options;
-
-  const {
-    key,
-    path = [],
-    items = [],
-    depth = 0
-  } = recursiveOptions;
+  const { indent = 2, compact = true, singleLine, maxLineLength, arrayMargin = '', objectMargin = ' ' } = options;
+  const { key, path = [], items = [], depth = 0 } = recursiveOptions;
 
   if (item === undefined) {
     return 'undefined';
@@ -32,12 +20,8 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
   let margin;
   let values;
 
-  const baseIndent = depth * indent;
-  const baseIndentChars = new Array(baseIndent + 1).join(' ');
-
-  const globalIndent = (depth + 1) * indent;
-  const globalIndentChars = new Array(globalIndent + 1).join(' ');
-
+  const baseIndentChars = new Array(depth * indent + 1).join(' ');
+  const globalIndentChars = new Array((depth + 1) * indent + 1).join(' ');
   const prefixIndentChars = key === undefined ? baseIndentChars : '';
 
   const perfectify = (key, value) => perfectJson(value, options, {
@@ -77,7 +61,7 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
   }
 
   let list;
-  if (Array.isArray(item) && arrayValuesAreExpandedObjects(values)) {
+  if (Array.isArray(item) && arrayValuesAreExpandedObjects(values) && compact) {
     const replaceRegExp = new RegExp(`\\n {${indent}}`, 'g');
     list = '';
     for (let i = 0; i < values.length; i++) {
