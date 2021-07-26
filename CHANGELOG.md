@@ -1,6 +1,7 @@
 # Changelog
 
 - `split` and `splitResult` options to split the resulting JSON string into chunks are added.
+- Dependencies are updated.
 
 ## 0.2.0 (2021-07-26)
 
