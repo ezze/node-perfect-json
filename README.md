@@ -92,7 +92,9 @@ console.log(perfectJson([{
 }, {
   name: 'Tamara',
   surname: 'Pushkova'
-}], { compact: false }));
+}], {
+  compact: false
+}));
 ```
 
 Result:
