@@ -35,11 +35,14 @@ perfectJson(obj, options)
       - `value` — value of the current property;
       - `path` — array consisting of names of all ascendant properties including the current one;
       - `items` — array of references to all ascendant objects and arrays;
+      - `line` — stringified array or object `value` placed on a single line;
       - `depth` — zero-based depth level (equals to `path.length` and `items.length`);
       - `indent` — count of indentation spaces per level (`(depth + 1) * indent` results in a summary indentation on a given level).
    - `maxLineLength` — places objects and arrays on a single line if resulting line's length is less than or equal to specified value;
    - `arrayMargin` — characters after opening and before closing array brackets when array is placed on a single line (defaults to empty string  meaning no gap: `["Javascript", "Node.js", "ES6"]`);
-   - `objectMargin` — characters after opening and before closing object brackets when object is placed on a single line (defaults to `' '` meaning a gap: `{ "node": "14.0.0", "eslint": true, "babel": true, "typescript": false }`).
+   - `objectMargin` — characters after opening and before closing object brackets when object is placed on a single line (defaults to `' '` meaning a gap: `{ "node": "14.0.0", "eslint": true, "babel": true, "typescript": false }`);
+   - `split` — function to split the resulting JSON into several nested JSONs, it accepts the same properties as `singleLine` function excepting `line` and should return a string placeholder to replace the current property by; JSON parts replaced by placeholders are stored in a separate object (where keys are placeholders) that can be accessed in `splitResult` function;
+   - `splitResult` — function being called at the end of transformation with an object of splitted JSONs as an argument.
 
 ### Basic example
 
@@ -50,13 +53,8 @@ const perfectJson = require('perfect-json');
 console.log(perfectJson({
   name: 'Dmitriy',
   surname: 'Pushkov',
-  skills: ["JavaScript", "Node.js", "ES6"],
-  env: {
-    node: "14.0.0",
-    eslint: true,
-    babel: true,
-    typescript: false
-  }
+  skills: ['JavaScript', 'Node.js', 'ES6'],
+  env: { node: '14.0.0', eslint: true, babel: true, typescript: false }
 }));
 ```
 
@@ -92,7 +90,9 @@ console.log(perfectJson([{
 }, {
   name: 'Tamara',
   surname: 'Pushkova'
-}], { compact: false }));
+}], {
+  compact: false
+}));
 ```
 
 Result:
@@ -119,17 +119,8 @@ const perfectJson = require('perfect-json');
 console.log(perfectJson({
   name: 'Dmitriy',
   surname: 'Pushkov',
-  skills: [
-    "JavaScript",
-    "Node.js",
-    "ES6"
-  ],
-  env: {
-    node: "14.0.0",
-    eslint: true,
-    babel: true,
-    typescript: false
-  }
+  skills: ['JavaScript', 'Node.js', 'ES6'],
+  env: { node: '14.0.0', eslint: true, babel: true, typescript: false }
 }, {
   indent: 4
 }));
@@ -164,17 +155,8 @@ const perfectJson = require('perfect-json');
 console.log(perfectJson({
   name: 'Dmitriy',
   surname: 'Pushkov',
-  skills: [
-    "JavaScript",
-    "Node.js",
-    "ES6"
-  ],
-  env: {
-    node: "14.0.0",
-    eslint: true,
-    babel: true,
-    typescript: false
-  }
+  skills: ['JavaScript', 'Node.js', 'ES6'],
+  env: { node: '14.0.0', eslint: true, babel: true, typescript: false }
 }, {
   singleLine: ({ key }) => {
     return ['skills', 'env'].includes(key);
@@ -202,17 +184,8 @@ const perfectJson = require('perfect-json');
 const obj = {
   name: 'Dmitriy',
   surname: 'Pushkov',
-  skills: [
-    "JavaScript",
-    "Node.js",
-    "ES6"
-  ],
-  env: {
-    node: "14.0.0",
-    eslint: true,
-    babel: true,
-    typescript: false
-  }
+  skills: ['JavaScript', 'Node.js', 'ES6'],
+  env: { node: "14.0.0", eslint: true, babel: true, typescript: false }
 };
 console.log(perfectJson(obj, {
   maxLineLength: 40
@@ -245,5 +218,62 @@ Result:
   "surname": "Pushkov",
   "skills": ["JavaScript", "Node.js", "ES6"],
   "env": { "node": "14.0.0", "eslint": true, "babel": true, "typescript": false }
+}
+```
+
+### Splitting
+
+Use `split` and `splitResult` options together:
+
+```javascript
+const perfectJson = require('perfect-json');
+console.log(perfectJson({
+  name: 'Dmitriy',
+  surname: 'Pushkov',
+  skills: ['JavaScript', 'Node.js', 'ES6'],
+  env: { node: '14.0.0', eslint: true, babel: true, typescript: false }
+}, {
+  split: ({ key, depth }) => {
+    if (depth !== 1) {
+      return null;
+    }
+    switch (key) {
+      case 'skills': return '#skills';
+      case 'env': return '#env';
+      default: return null;
+    }
+  },
+  splitResult: splitted => {
+    console.log(splitted['#skills']);
+    console.log(splitted['#env']);
+  }
+}));
+```
+
+Result:
+
+```json
+[
+  "JavaScript",
+  "Node.js",
+  "ES6"
+]
+```
+
+```json
+{
+  "node": "14.0.0",
+  "eslint": true,
+  "babel": true,
+  "typescript": false
+}
+```
+
+```json
+{
+  "name": "Dmitriy",
+  "surname": "Pushkov",
+  "skills": "#skills",
+  "env": "#env"
 }
 ```

@@ -1,6 +1,11 @@
 export default function perfectJson(item, options = {}, recursiveOptions = {}) {
-  const { indent = 2, compact = true, singleLine, maxLineLength, arrayMargin = '', objectMargin = ' ' } = options;
-  const { key, path = [], items = [], depth = 0 } = recursiveOptions;
+  const {
+    indent = 2, compact = true, singleLine, maxLineLength,
+    arrayMargin = '', objectMargin = ' ', split, splitResult
+  } = options;
+
+  const { key, path = [], items = [], depth = 0, splitted = {} } = recursiveOptions;
+  let { splitDepth = 0 } = recursiveOptions;
 
   if (item === undefined) {
     return 'undefined';
@@ -15,22 +20,28 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
     return `${item}`;
   }
 
-  let open;
-  let close;
-  let margin;
-  let values;
-
-  const baseIndentChars = new Array(depth * indent + 1).join(' ');
-  const globalIndentChars = new Array((depth + 1) * indent + 1).join(' ');
-  const prefixIndentChars = key === undefined ? baseIndentChars : '';
+  const itemOpts = { key, value: item, path, items, depth, indent };
+  const splitPlaceholder = typeof key === 'string' && typeof split === 'function' ? split(itemOpts) : null;
+  if (splitPlaceholder) {
+    if (splitted[splitPlaceholder] !== undefined) {
+      throw new Error(`Placeholder "${splitPlaceholder}" is already used`);
+    }
+    splitDepth = 0;
+  }
 
   const perfectify = (key, value) => perfectJson(value, options, {
     key,
     path: path.concat([key]),
     items: items.concat([item]),
-    depth: depth + 1
+    depth: depth + 1,
+    splitDepth: splitDepth + 1,
+    splitted
   });
 
+  const baseIndentChars = getIndentChars(depth, indent);
+  const prefixIndentChars = key === undefined ? baseIndentChars : '';
+
+  let open, close, margin, values;
   if (Array.isArray(item)) {
     if (item.length === 0) {
       return `${prefixIndentChars}[]`;
@@ -52,30 +63,43 @@ export default function perfectJson(item, options = {}, recursiveOptions = {}) {
   }
 
   const line = `${open}${margin}${values.join(', ')}${margin}${close}`;
+
+  let result;
   if (
     (typeof singleLine === 'boolean' && singleLine) ||
-    (typeof singleLine === 'function' && singleLine({ key, value: item, path, items, line, depth, indent })) ||
+    (typeof singleLine === 'function' && singleLine({ ...itemOpts, line })) ||
     (typeof maxLineLength === 'number' && line.length + baseIndentChars.length <= maxLineLength)
   ) {
-    return line;
-  }
-
-  let list;
-  if (Array.isArray(item) && arrayValuesAreExpandedObjects(values) && compact) {
-    const replaceRegExp = new RegExp(`\\n {${indent}}`, 'g');
-    list = '';
-    for (let i = 0; i < values.length; i++) {
-      if (list) {
-        list += ', ';
-      }
-      list += values[i].replace(replaceRegExp, '\n');
-    }
+    result = line;
   }
   else {
-    list = `\n${values.map(value => `${globalIndentChars}${value}`).join(',\n')}\n${baseIndentChars}`;
+    let list;
+    if (Array.isArray(item) && arrayValuesAreExpandedObjects(values) && compact) {
+      const replaceIndent = splitPlaceholder ? (splitDepth + 1) * indent : indent;
+      const replaceRegExp = new RegExp(`\\n {${replaceIndent}}`, 'g');
+      list = '';
+      for (let i = 0; i < values.length; i++) {
+        if (list) {
+          list += ', ';
+        }
+        list += values[i].replace(replaceRegExp, '\n');
+      }
+    }
+    else {
+      const baseSpace = getIndentChars(splitDepth, indent);
+      const nestedSpace = getIndentChars(splitDepth + 1, indent);
+      list = `\n${values.map(value => `${nestedSpace}${value}`).join(',\n')}\n${baseSpace}`;
+    }
+    result = `${prefixIndentChars}${open}${list}${close}`;
   }
 
-  return `${prefixIndentChars}${open}${list}${close}`;
+  if (splitPlaceholder) {
+    splitted[splitPlaceholder] = result;
+  }
+  if (depth === 0 && typeof splitResult === 'function') {
+    splitResult(splitted);
+  }
+  return splitPlaceholder ? `"${splitPlaceholder}"` : result;
 }
 
 function arrayValuesAreExpandedObjects(values) {
@@ -85,4 +109,8 @@ function arrayValuesAreExpandedObjects(values) {
     }
   }
   return true;
+}
+
+function getIndentChars(depth, indent) {
+  return new Array(depth * indent + 1).join(' ');
 }
