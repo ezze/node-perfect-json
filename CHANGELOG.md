@@ -1,5 +1,7 @@
 # Changelog
 
+## 0.3.1 (2021-07-27)
+
 - Keywords are added to `package.json`.
 
 ## 0.3.0 (2021-07-26)
