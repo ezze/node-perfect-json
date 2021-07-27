@@ -3,9 +3,20 @@
   "version": "0.3.0",
   "description": "Utility function to beautify JSON string...like JSON.stringify() but better",
   "main": "lib/perfect-json.js",
-  "repository": "git@github.com:ezze/node-perfect-json",
+  "repository": "ezze/node-perfect-json",
   "author": "Dmitriy Pushkov <ezze@ezze.org>",
   "license": "MIT",
+  "keywords": [
+    "json",
+    "stringify",
+    "format",
+    "formatter",
+    "pretty",
+    "print",
+    "pretty-print",
+    "compact",
+    "indent"
+  ],
   "scripts": {
     "prepublishOnly": "npm run lint && npm run test && npm run build",
     "build": "npm run clean && babel src -d lib",
